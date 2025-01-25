@@ -4,7 +4,7 @@
 
 
 
-#OLD:
+# OLD:
 # Staggered layers is currently in *Alpha*.
 
 ![Icon](https://cdn.discordapp.com/attachments/1087393628420329585/1332429863180570735/staggered_layers_icon.png?ex=67953982&is=6793e802&hm=192dffcbf898bed5a9700a7cc6cc879413b1216aad2f0e97845a6d751f2be7be&)
