@@ -752,6 +752,19 @@ static ExtrusionEntityCollection traverse_loops(const PerimeterGenerator &perime
             paths.emplace_back(std::move(path));
         }
 
+        // stagger loop paths if staggered perimeters enabled
+        if (perimeter_generator.config->staggered_perimeters && loop.depth % 2 == 1) {
+            for (auto& path : paths) {
+                if (perimeter_generator.layer_id == 0)
+					path.extrusion_multiplier = 1.5;
+                else if (perimeter_generator.layer_id == perimeter_generator.number_of_layers - 1) //i.e. last layer
+					path.extrusion_multiplier = 0.5;
+
+                if (perimeter_generator.layer_id != perimeter_generator.number_of_layers - 1) //i.e. last layer
+					path.z_offset             = 0.5;
+            }
+        }
+
         coll.append(ExtrusionLoop(std::move(paths), loop_role, loop.depth));
     }
     
