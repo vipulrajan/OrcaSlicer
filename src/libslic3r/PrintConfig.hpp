@@ -79,6 +79,8 @@ enum class WallSequence {
     InnerOuter,
     OuterInner,
     InnerOuterInner,
+    EvenOdd,
+    OddEven,
     Count,
 };
 

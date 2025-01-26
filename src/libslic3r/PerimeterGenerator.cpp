@@ -752,7 +752,7 @@ static ExtrusionEntityCollection traverse_loops(const PerimeterGenerator &perime
             paths.emplace_back(std::move(path));
         }
 
-        coll.append(ExtrusionLoop(std::move(paths), loop_role));
+        coll.append(ExtrusionLoop(std::move(paths), loop_role, loop.depth));
     }
     
     // Append thin walls to the nearest-neighbor search (only for first iteration)
@@ -2338,6 +2338,20 @@ void PerimeterGenerator::process_classic()
                         position = arr_i + 1;
                     }
                 }
+            } else if (this->config->wall_sequence == WallSequence::EvenOdd) {
+                std::sort(entities.entities.begin(), entities.entities.end(), 
+                    [](ExtrusionEntity* extrusion_1, ExtrusionEntity* extrusion_2) -> bool {
+                        ExtrusionLoop* loop_1 = static_cast<ExtrusionLoop*>(extrusion_1);
+                        ExtrusionLoop* loop_2 = static_cast<ExtrusionLoop*>(extrusion_2);
+                        return loop_1->depth() % 2 <= loop_2->depth() % 2;
+                });
+            } else if (this->config->wall_sequence == WallSequence::OddEven) {
+                std::sort(entities.entities.begin(), entities.entities.end(), 
+                    [](ExtrusionEntity* extrusion_1, ExtrusionEntity* extrusion_2) -> bool {
+                        ExtrusionLoop* loop_1 = static_cast<ExtrusionLoop*>(extrusion_1);
+                        ExtrusionLoop* loop_2 = static_cast<ExtrusionLoop*>(extrusion_2);
+                       return loop_1->depth() % 2 >= loop_2->depth() % 2;
+                });
             }
             
             // append perimeters for this slice as a collection
@@ -3141,15 +3155,8 @@ void PerimeterGenerator::process_arachne()
             }
         }
 
-        if (this->config->staggered_perimeters) { // If staggered layers are on, all odd perimeters will be staggered and should be printed after the non staggered perimeters
-            std::sort(ordered_extrusions.begin(), ordered_extrusions.end(), 
-                [](PerimeterGeneratorArachneExtrusion extrusion_1, PerimeterGeneratorArachneExtrusion extrusion_2) -> bool {
-                return extrusion_1.extrusion->inset_idx % 2 <= extrusion_2.extrusion->inset_idx % 2;
-                });
-        }
-
        // printf("New Layer: Layer ID %d\n",layer_id); //debug - new layer
-        if (this->config->wall_sequence == WallSequence::InnerOuterInner && layer_id > 0 && !this->config->staggered_perimeters ) { // only enable inner outer inner algorithm after first layer
+        if (this->config->wall_sequence == WallSequence::InnerOuterInner && layer_id > 0) { // only enable inner outer inner algorithm after first layer
             if (ordered_extrusions.size() > 2) { // 3 walls minimum needed to do inner outer inner ordering
                 int position = 0; // index to run the re-ordering for multiple external perimeters in a single island.
                 int arr_i, arr_j = 0;    // indexes to run through the walls in the for loops
@@ -3238,6 +3245,16 @@ void PerimeterGenerator::process_arachne()
                     position = arr_i + 1;
                 }
             }
+        } else if (this->config->wall_sequence == WallSequence::EvenOdd) {
+            std::sort(ordered_extrusions.begin(), ordered_extrusions.end(), 
+                [](PerimeterGeneratorArachneExtrusion extrusion_1, PerimeterGeneratorArachneExtrusion extrusion_2) -> bool {
+                    return extrusion_1.extrusion->inset_idx % 2 <= extrusion_2.extrusion->inset_idx % 2;
+            });
+        } else if (this->config->wall_sequence == WallSequence::OddEven) {
+            std::sort(ordered_extrusions.begin(), ordered_extrusions.end(), 
+                [](PerimeterGeneratorArachneExtrusion extrusion_1, PerimeterGeneratorArachneExtrusion extrusion_2) -> bool {
+                    return extrusion_1.extrusion->inset_idx % 2 >= extrusion_2.extrusion->inset_idx % 2;
+            });
         }
         
         bool steep_overhang_contour = false;
