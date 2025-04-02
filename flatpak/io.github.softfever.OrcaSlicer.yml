@@ -4,7 +4,7 @@ runtime-version: "45"
 sdk: org.gnome.Sdk
 command: entrypoint
 separate-locales: true
-rename-icon: OrcaSlicer 
+rename-icon: OrcaSlicer
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -21,7 +21,6 @@ finish-args:
   - --env=BAMBU_STUDIO_DARK_THEME=false
 
 modules:
-
   # JPEG codec for the liveview
   - name: gst-plugins-good
     buildsystem: meson
@@ -104,8 +103,8 @@ modules:
         url: https://github.com/KDE/extra-cmake-modules
         tag: v5.249.0
     cleanup:
-      - / 
- 
+      - /
+
   - name: orca_wxwidgets
     buildsystem: simple
     build-commands:
@@ -169,13 +168,13 @@ modules:
           -DCMAKE_INSTALL_PREFIX=/app
         cmake --build . 
         rm -r /run/build/orca_deps/external-packages
-    
+
     cleanup:
       - /app/include
       - "*.a"
       - "*.la"
       - /app/lib/cmake
-    
+
     sources:
       # -
       # Section bellow fetches all OrcaSlicer dependencies before the build process and stores them in external-packages/*/* .
@@ -183,9 +182,9 @@ modules:
       #
       # NOTE: The url, dest folder name and sha256 must match from OrcaSlicer's cmake scripts and folder names in OrcaSlicer/deps/
       # -
-      
+
       # OrcaSlicer Source Archive
-      - type: dir 
+      - type: dir
         path: ../
 
       # Blosc
@@ -214,7 +213,7 @@ modules:
 
       # MPFR
       - type: file
-        url: https://www.mpfr.org/mpfr-current/mpfr-4.2.1.tar.bz2
+        url: https://www.mpfr.org/mpfr-4.2.1/mpfr-4.2.1.tar.bz2
         dest: external-packages/MPFR
         sha256: b9df93635b20e4089c29623b19420c4ac848a1b29df1cfd59f26cab0d2666aa0
 
@@ -265,7 +264,7 @@ modules:
         url: https://github.com/oneapi-src/oneTBB/archive/refs/tags/v2021.5.0.zip
         dest: external-packages/TBB
         sha256: 83ea786c964a384dd72534f9854b419716f412f9d43c0be88d41874763e7bb47
-      
+
       # Boost
       - type: file
         url: https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
@@ -278,7 +277,7 @@ modules:
         dest: external-packages/GLFW
         sha256: e02d956935e5b9fb4abf90e2c2e07c9a0526d7eacae8ee5353484c69a2a76cd0
 
-  - name: OrcaSlicer 
+  - name: OrcaSlicer
     buildsystem: simple
     build-commands:
       - |
@@ -301,7 +300,6 @@ modules:
       - /include
 
     post-install:
-
       - | # Desktop Integration files
         install -Dm644 -t /app/share/icons/hicolor/scalable/apps/ resources/images/OrcaSlicer.svg
         install -Dm644 ${FLATPAK_ID}.metainfo.xml /app/share/metainfo/${FLATPAK_ID}.metainfo.xml
@@ -320,7 +318,7 @@ modules:
       # -
 
       # OrcaSlicer Source Archive
-      - type: dir 
+      - type: dir
         path: ../
 
       # AppData metainfo for Gnome Software & Co.
