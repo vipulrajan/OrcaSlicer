@@ -56,6 +56,6 @@ jobs:
     uses: ./.github/workflows/build_check_cache.yml
     with:
       os: ${{ matrix.os }}
-      arch: ${{ null }}
+      arch: ${{ matrix.arch }}
       build-deps-only: ${{ inputs.build-deps-only || false }}
     secrets: inherit
